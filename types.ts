@@ -58,6 +58,7 @@ export type LogTypeOptions<P extends string = string> = BaseLogOptions & {
     );
   beforeColor?: (text: string | number) => string;
   beforeLog?: (text: string | number) => string;
+  beforePrefix?: (text: string | number) => string;
 } & (
     | {
         removeSeparator?: true;

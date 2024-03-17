@@ -118,6 +118,7 @@ class Tarsier<LT extends LogTypes> {
       level = "info",
       showProcessPid = this.options.showProcessPid ?? false,
       showTimestamp = this.options.showTimestamp ?? true,
+      beforePrefix = null,
       beforeLog = null,
       beforeColor = null,
     } = options;
@@ -139,6 +140,9 @@ class Tarsier<LT extends LogTypes> {
           const foreground = colorette[color.foreground];
           if (prefix && color.samePrefixColor) {
             // Attach prefix to the output beforehand, so we can color it together
+            if (beforePrefix) {
+              prefix = beforePrefix(prefix);
+            }
             output = this.prefixWithSeparator(prefix, output, options);
             hasAttachedPrefix = true;
           }
@@ -160,6 +164,9 @@ class Tarsier<LT extends LogTypes> {
 
       // Attach prefix to the output if it wasn't attached before (e.g. because of color options)
       if (prefix && !hasAttachedPrefix) {
+        if (beforePrefix) {
+          prefix = beforePrefix(prefix);
+        }
         if (color && "prefixColor" in color) {
           const prefixColor = color.prefixColor;
           if (prefixColor?.background) {
@@ -239,3 +246,9 @@ export function tarsier<LT extends LogTypes>(
   // @ts-expect-error
   return new Tarsier(options) as TarsierInstance<LT>;
 }
+
+export type {
+  ConstructorOptions as TarsierConstructorOptions,
+  LogTypeOptions as TarsierLogTypeOptions,
+  TarsierInstance,
+};

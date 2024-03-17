@@ -17,4 +17,7 @@ const logger = tarsier({
       },
     },
   },
-} as const);
+});
+
+logger.santa("Ho ho ho");
+logger.grinch("I hate Christmas");
