@@ -115,7 +115,7 @@ class _Tarsier<T extends string> {
       prefix = null,
       color = null,
       level = "info",
-      showProcessPid = true,
+      showProcessPid = false,
       showTimestamp = true,
       beforeLog = null,
       beforeColor = null,
@@ -187,7 +187,10 @@ class _Tarsier<T extends string> {
       }
 
       if (showTimestamp) {
-        const timestamp = new Date().toISOString();
+        const timestamp = new Date()
+          .toISOString()
+          .replace(/Z$/, "")
+          .replace("T", " ");
         output = this.prefixWithSeparator(
           this.label(timestamp),
           output,
