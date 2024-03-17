@@ -66,6 +66,7 @@ class Tarsier<LT extends LogTypes> {
       prefix: "✖",
       color: {
         foreground: ForegroundColor.RedBright,
+        style: Style.Bold,
       },
     },
     info: {
@@ -84,9 +85,10 @@ class Tarsier<LT extends LogTypes> {
       prefix: "⚠",
       color: {
         foreground: ForegroundColor.YellowBright,
+        style: Style.Bold,
       },
     },
-  } as const;
+  } as const satisfies LogTypes;
 
   public options: ConstructorOptions<LT>;
 
@@ -130,19 +132,23 @@ class Tarsier<LT extends LogTypes> {
         output = beforeColor(output);
       }
 
+      if (prefix && beforePrefix) {
+        prefix = beforePrefix(prefix);
+      }
+
       if (color) {
         if (color.background) {
           const background = colorette[color.background];
+          if (prefix && color.samePrefixColor && !hasAttachedPrefix) {
+            output = this.prefixWithSeparator(prefix, output, options);
+            hasAttachedPrefix = true;
+          }
           output = background(output);
         }
 
         if (color.foreground) {
           const foreground = colorette[color.foreground];
-          if (prefix && color.samePrefixColor) {
-            // Attach prefix to the output beforehand, so we can color it together
-            if (beforePrefix) {
-              prefix = beforePrefix(prefix);
-            }
+          if (prefix && color.samePrefixColor && !hasAttachedPrefix) {
             output = this.prefixWithSeparator(prefix, output, options);
             hasAttachedPrefix = true;
           }
