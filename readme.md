@@ -1,10 +1,14 @@
-# 🌒 Tarsier
+<div align="center">
+  <h1>🌒 Tarsier</h1>
+  <strong>Yet another logging library for Node.js/Bun</strong>
+  <img src=".github/preview.png" width="640">
+  <br>
+  <b>W.I.P.</b>
+</div>
 
-**W.I.P.**
+---
 
-Tarsier is yet another logging library for Node.js/Bun.
-
-It's intended to be fast, highly customizable and just pretty.
+Tarsier is intended to be fast, highly customizable and just pretty.
 
 If you need a more complex JSON logger, you should check out [pino](https://github.com/pinojs/pino) instead.
 
@@ -22,14 +26,13 @@ bun add -D tarsierjs
 ## Usage
 
 ```ts
-import { tarsier, Color } from "tarsierjs";
+import { tarsier, Color } from ".";
 
 const logger = tarsier({
   types: {
     santa: {
       level: "info",
       prefix: "🎅",
-      disabled: process.env.DISABLE_SANTA,
       color: {
         foreground: Color.Foreground.Red,
         style: Color.Style.Bold,
@@ -40,12 +43,14 @@ const logger = tarsier({
       prefix: "🎄",
       color: {
         foreground: Color.Foreground.Green,
-        style: Color.Style.Bold,
+        style: [Color.Style.Strikethrough, Color.Style.Italic],
       },
     },
   },
 });
 
-logger.santa("Ho ho ho");
-logger.grinch("I hate Christmas");
+logger.error(new Error("Something went wrong here!"));
+logger.info("Santa is coming to town!");
+logger.santa("Ho ho ho!");
+logger.grinch("I hate Christmas!");
 ```
