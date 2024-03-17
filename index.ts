@@ -115,8 +115,8 @@ class _Tarsier<T extends string> {
       prefix = null,
       color = null,
       level = "info",
-      showProcessPid = false,
-      showTimestamp = true,
+      showProcessPid = this.options.showProcessPid ?? false,
+      showTimestamp = this.options.showTimestamp ?? true,
       beforeLog = null,
       beforeColor = null,
     } = options;
@@ -232,9 +232,11 @@ class _Tarsier<T extends string> {
   }
 }
 
-export function tarsier<T extends string>(
-  options?: ConstructorOptions<T>
-): Tarsier<T> {
+export function tarsier<
+  T extends string,
+  P extends string = never,
+  O extends ConstructorOptions<T, P> = ConstructorOptions<T, P>
+>(options?: ConstructorOptions<T, P>): Tarsier<T, P> {
   // @ts-expect-error bro trust me
-  return new _Tarsier(options) as Instance<T>;
+  return new _Tarsier(options) as Tarsier<T, O>;
 }
