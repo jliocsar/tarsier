@@ -6,6 +6,10 @@
     "build": "bun build index.ts --target=node --outdir=dist",
     "test": "bun test"
   },
+  "types": "./types/tarsier.d.ts",
+  "files": [
+    "index.js"
+  ],
   "devDependencies": {
     "@types/bun": "latest"
   },
