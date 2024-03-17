@@ -15,7 +15,7 @@ const logger = tarsier({
       prefix: "🎄",
       color: {
         foreground: Color.Foreground.Green,
-        style: Color.Style.Bold,
+        style: [Color.Style.Strikethrough, Color.Style.Italic],
       },
     },
   },
