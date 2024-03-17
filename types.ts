@@ -1,30 +1,16 @@
 import type { Colorette } from "colorette";
 
 type DefaultLogType = "error" | "info" | "success" | "warn";
+
 export type LogLevel = "error" | "info" | "warn" | "debug";
 
 type Separator<
   S extends string = " ",
   RS extends boolean = false
 > = RS extends true ? "" : S;
-export type Color<
-  T extends string = DefaultLogType,
-  P extends string = never,
-  O extends ConstructorOptions<T, P> = ConstructorOptions<T, P>
-> = <F extends P, X extends string | number>(
-  text: X
-) => T extends keyof NonNullable<O["types"]>
-  ? NonNullable<NonNullable<O["types"]>[T]> extends {
-      prefix?: infer PF;
-      removeSeparator?: infer RS;
-      separator?: infer S;
-    }
-    ? `${PF extends string ? PF : never}${Separator<
-        S extends string ? S : never,
-        RS extends boolean ? RS : never
-      >}${X}`
-    : never
-  : X;
+
+export type Color = <X extends string | number>(text: X) => void;
+
 export type ColorStyle =
   | "reset"
   | "bold"
@@ -34,10 +20,12 @@ export type ColorStyle =
   | "inverse"
   | "hidden"
   | "strikethrough";
+
 export type Colors = Exclude<
   keyof Colorette,
   ColorStyle | "createColors" | "isColorSupported"
 >;
+
 export type BackgroundColor<C extends Colors = Colors> = C extends `bg${string}`
   ? C
   : never;
@@ -52,6 +40,9 @@ type BaseLogOptions = {
   showProcessPid?: boolean;
   showTimestamp?: boolean;
 };
+
+export type LogTypes = Record<string, LogTypeOptions>;
+
 export type LogTypeOptions<P extends string = string> = BaseLogOptions & {
   prefix?: P;
   level?: LogLevel;
@@ -77,25 +68,22 @@ export type LogTypeOptions<P extends string = string> = BaseLogOptions & {
       }
   );
 
-export type Base<T extends string = never, P extends string = never> = {
-  readonly options: ConstructorOptions<T, P>;
+export type Base<O extends ConstructorOptions> = {
+  readonly options: O;
 };
-export type ConstructorOptions<
-  T extends string,
-  P extends string = never
-> = BaseLogOptions & {
-  types?: Partial<Record<T, LogTypeOptions<P>>>;
-};
-export type Options<T extends string> = Required<ConstructorOptions<T>>;
+
+export type ConstructorOptions<LT extends LogTypes = LogTypes> =
+  BaseLogOptions & {
+    types?: LT;
+  };
+// export type Options<T extends string> = Required<>;
 export type Constructor = {
-  new <T extends string = DefaultLogType, P extends string = never>(
-    options?: ConstructorOptions<T>
-  ): Tarsier<T, P>;
+  new <LT extends LogTypes>(
+    options?: ConstructorOptions<LT>
+  ): TarsierInstance<LT>;
 };
-export type Tarsier<
-  T extends string = DefaultLogType,
-  P extends string = never,
-  O extends ConstructorOptions<T, P> = ConstructorOptions<T, P>
-> = Base<T> &
-  Record<T, Color<T, P, O>> &
-  Record<DefaultLogType, Color<T, P, O>>;
+
+export type TarsierInstance<
+  LT extends LogTypes,
+  K extends keyof LT = keyof LT | DefaultLogType
+> = Base<LT> & Record<K, Color>;

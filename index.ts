@@ -2,9 +2,9 @@ import { stdout } from "node:process";
 import * as colorette from "colorette";
 import type {
   ConstructorOptions,
-  Tarsier,
+  TarsierInstance,
   LogTypeOptions,
-  Options,
+  LogTypes,
 } from "./types";
 
 export const Style = {
@@ -60,7 +60,7 @@ export const Color = {
   Foreground: ForegroundColor,
 } as const;
 
-class _Tarsier<T extends string> {
+class Tarsier<LT extends LogTypes> {
   private readonly defaultLogTypes = {
     error: {
       prefix: "✖",
@@ -88,19 +88,20 @@ class _Tarsier<T extends string> {
     },
   } as const;
 
-  public options: Options<T>;
+  public options: ConstructorOptions<LT>;
 
-  constructor(options?: ConstructorOptions<T>) {
+  constructor(options?: ConstructorOptions<LT>) {
+    // @ts-expect-error ffs
     this.options = {
       ...options,
       types: {
         ...this.defaultLogTypes,
-        ...options?.types!,
+        ...options?.types,
       },
-    } as Options<T>;
+    } as ConstructorOptions<LT>;
 
-    const logTypes = Object.entries(this.options.types) as [
-      T,
+    const logTypes = Object.entries(this.options.types!) as [
+      keyof LT,
       LogTypeOptions
     ][];
 
@@ -232,11 +233,9 @@ class _Tarsier<T extends string> {
   }
 }
 
-export function tarsier<
-  T extends string,
-  P extends string = never,
-  O extends ConstructorOptions<T, P> = ConstructorOptions<T, P>
->(options?: ConstructorOptions<T, P>): Tarsier<T, P> {
-  // @ts-expect-error bro trust me
-  return new _Tarsier(options) as Tarsier<T, O>;
+export function tarsier<LT extends LogTypes>(
+  options?: ConstructorOptions<LT>
+): TarsierInstance<LT> {
+  // @ts-expect-error
+  return new Tarsier(options) as TarsierInstance<LT>;
 }

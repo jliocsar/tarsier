@@ -2,6 +2,13 @@ import { tarsier, Color } from ".";
 
 const logger = tarsier({
   types: {
+    grinch: {
+      prefix: "🎄",
+      color: {
+        foreground: Color.Foreground.Green,
+        style: Color.Style.Bold,
+      },
+    },
     santa: {
       prefix: "🎅",
       color: {
@@ -10,6 +17,4 @@ const logger = tarsier({
       },
     },
   },
-});
-
-logger.santa("Ho ho ho!");
+} as const);
