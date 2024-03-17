@@ -4,11 +4,6 @@ type DefaultLogType = "error" | "info" | "success" | "warn";
 
 export type LogLevel = "error" | "info" | "warn" | "debug";
 
-type Separator<
-  S extends string = " ",
-  RS extends boolean = false
-> = RS extends true ? "" : S;
-
 export type Color = <X extends string | number>(text: X) => void;
 
 export type ColorStyle =
@@ -46,19 +41,11 @@ export type LogTypes = Record<string, LogTypeOptions>;
 export type LogTypeOptions<P extends string = string> = BaseLogOptions & {
   prefix?: P;
   level?: LogLevel;
-  color?: LogTypeOptionColor &
-    (
-      | {
-          samePrefixColor?: true;
-        }
-      | {
-          samePrefixColor?: false;
-          prefixColor?: LogTypeOptionColor;
-        }
-    );
+  disabled?: boolean;
   beforeColor?: (text: string | number) => string;
   beforeLog?: (text: string | number) => string;
   beforePrefix?: (text: string | number) => string;
+  onLog?: (text: string | number) => void | Promise<void>;
 } & (
     | {
         removeSeparator?: true;
@@ -66,6 +53,24 @@ export type LogTypeOptions<P extends string = string> = BaseLogOptions & {
     | {
         removeSeparator?: false;
         separator?: string;
+      }
+  ) &
+  (
+    | {
+        label?: true;
+        color: LogTypeOptionColor &
+          (
+            | {
+                samePrefixColor?: true;
+              }
+            | {
+                samePrefixColor?: false;
+                prefixColor?: LogTypeOptionColor;
+              }
+          );
+      }
+    | {
+        label?: false;
       }
   );
 
@@ -77,7 +82,7 @@ export type ConstructorOptions<LT extends LogTypes = LogTypes> =
   BaseLogOptions & {
     types?: LT;
   };
-// export type Options<T extends string> = Required<>;
+
 export type Constructor = {
   new <LT extends LogTypes>(
     options?: ConstructorOptions<LT>
@@ -86,5 +91,8 @@ export type Constructor = {
 
 export type TarsierInstance<
   LT extends LogTypes,
-  K extends keyof LT = keyof LT | DefaultLogType
-> = Base<LT> & Record<K, Color>;
+  K extends keyof LT = keyof LT | Exclude<DefaultLogType, "error">
+> = Base<LT> &
+  Record<K, Color> & {
+    error: (textOrError: string | number | Error) => void;
+  };

@@ -21,5 +21,7 @@ const logger = tarsier({
   },
 });
 
-logger.santa("Ho ho ho");
-logger.grinch("I hate Christmas");
+logger.error(new Error("Something went wrong here!"));
+logger.info("Santa is coming to town!");
+logger.santa("Ho ho ho!");
+logger.grinch("I hate Christmas!");

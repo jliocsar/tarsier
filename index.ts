@@ -6,6 +6,7 @@ import type {
   LogTypeOptions,
   LogTypes,
 } from "./types";
+import { spawnSync } from "bun";
 
 export const Style = {
   Bold: "bold",
@@ -61,28 +62,32 @@ export const Color = {
 } as const;
 
 class Tarsier<LT extends LogTypes> {
+  private readonly columns = Number(
+    spawnSync(["tput", "cols"]).stdout.toString()
+  );
   private readonly defaultLogTypes = {
     error: {
-      prefix: "✖",
+      label: true,
       color: {
         foreground: ForegroundColor.RedBright,
         style: Style.Bold,
+        samePrefixColor: true,
       },
     },
     info: {
-      prefix: "ℹ",
+      label: true,
       color: {
         foreground: ForegroundColor.BlueBright,
       },
     },
     success: {
-      prefix: "✔",
+      label: true,
       color: {
         foreground: ForegroundColor.GreenBright,
       },
     },
     warn: {
-      prefix: "⚠",
+      label: true,
       color: {
         foreground: ForegroundColor.YellowBright,
         style: Style.Bold,
@@ -109,23 +114,31 @@ class Tarsier<LT extends LogTypes> {
 
     for (const [logTypeName, logType] of logTypes) {
       // @ts-expect-error trust me bro
-      this[logTypeName] = this.build(logType);
+      this[logTypeName] = this.build(logTypeName, logType);
     }
   }
 
-  private build(options: LogTypeOptions) {
+  private build(typeName: string, options: LogTypeOptions) {
     let {
       prefix = null,
-      color = null,
       level = "info",
+      label = false,
+      disabled = false,
       showProcessPid = this.options.showProcessPid ?? false,
       showTimestamp = this.options.showTimestamp ?? true,
       beforePrefix = null,
       beforeLog = null,
       beforeColor = null,
+      onLog = null,
     } = options;
-    return (text: string | number) => {
-      let output = text;
+    return (text: string | number | Error) => {
+      if (disabled) {
+        return;
+      }
+
+      const isError = text instanceof Error;
+      let output = isError ? text.message : text;
+      let labelText = label ? ` ${typeName.toUpperCase()} ` : null;
       let hasAttachedPrefix = false;
 
       if (beforeColor) {
@@ -136,12 +149,16 @@ class Tarsier<LT extends LogTypes> {
         prefix = beforePrefix(prefix);
       }
 
+      const color = "color" in options ? options.color : null;
       if (color) {
         if (color.background) {
           const background = colorette[color.background];
           if (prefix && color.samePrefixColor && !hasAttachedPrefix) {
             output = this.prefixWithSeparator(prefix, output, options);
             hasAttachedPrefix = true;
+          }
+          if (labelText) {
+            labelText = background(labelText);
           }
           output = background(output);
         }
@@ -151,6 +168,16 @@ class Tarsier<LT extends LogTypes> {
           if (prefix && color.samePrefixColor && !hasAttachedPrefix) {
             output = this.prefixWithSeparator(prefix, output, options);
             hasAttachedPrefix = true;
+          }
+          if (labelText) {
+            const labelBg =
+              "bg" +
+              color.foreground.charAt(0).toUpperCase() +
+              color.foreground.slice(1);
+            const background = colorette[labelBg as keyof colorette.Colorette];
+            if (!!background) {
+              labelText = background(labelText);
+            }
           }
           output = foreground(output);
         }
@@ -177,11 +204,25 @@ class Tarsier<LT extends LogTypes> {
           const prefixColor = color.prefixColor;
           if (prefixColor?.background) {
             const background = colorette[prefixColor.background];
+            if (labelText) {
+              labelText = background(labelText);
+            }
             prefix = background(prefix);
           }
 
           if (prefixColor?.foreground) {
             const foreground = colorette[prefixColor.foreground];
+            if (labelText) {
+              const labelBg =
+                "bg" +
+                prefixColor.foreground.charAt(0).toUpperCase() +
+                prefixColor.foreground.slice(1);
+              const background =
+                colorette[labelBg as keyof colorette.Colorette];
+              if (!!background) {
+                labelText = background(labelText);
+              }
+            }
             prefix = foreground(prefix);
           }
 
@@ -198,6 +239,11 @@ class Tarsier<LT extends LogTypes> {
           }
         }
         output = this.prefixWithSeparator(prefix, output, options);
+        if (labelText) {
+          output = this.prefixWithSeparator(labelText, output, options);
+        }
+      } else if (labelText) {
+        output = this.prefixWithSeparator(labelText, output, options);
       }
 
       if (showTimestamp) {
@@ -219,6 +265,30 @@ class Tarsier<LT extends LogTypes> {
 
       if (beforeLog) {
         output = beforeLog(output);
+      }
+
+      if (isError && text.stack) {
+        const stack = text.stack.replace(/.*\n/, "").trimEnd();
+        const stackLines = stack.split("\n");
+        const stackSize = stackLines.length;
+        output = `${output}\n${colorette.dim(
+          stack
+            .split("\n")
+            .map(
+              (line, idx) =>
+                `  ${idx < stackSize - 1 ? "├─" : "└─"} ` +
+                line.replace(/\s+at\s+/, " ").trim()
+            )
+            .join("\n")
+        )}`;
+      }
+
+      if (onLog) {
+        onLog(output);
+      }
+
+      if (labelText) {
+        output = `\n${output}\n`;
       }
 
       this.log(output);
