@@ -14,7 +14,7 @@ type BaseLogOptions = {
     showProcessPid?: boolean;
     showTimestamp?: boolean;
 };
-export type LogTypes = Record<DefaultLogType & string, LogTypeOptions>;
+export type LogTypes = Record<string, LogTypeOptions>;
 export type LogTypeOptions<P extends string = string> = BaseLogOptions & {
     prefix?: P;
     level?: LogLevel;

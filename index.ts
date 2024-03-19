@@ -97,6 +97,7 @@ class Tarsier<LT extends LogTypes> {
   public options: ConstructorOptions<LT>;
 
   constructor(options?: ConstructorOptions<LT>) {
+    // @ts-expect-error ffs
     this.options = {
       ...options,
       types: {
