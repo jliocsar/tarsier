@@ -1,6 +1,6 @@
 {
   "name": "@jliocsar/tarsier",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "module": "index.ts",
   "type": "module",
   "author": "JC (https://github.com/jliocsar)",
@@ -29,8 +29,9 @@
     "prepublish": "bun run build"
   },
   "files": [
-    "dist/"
+    "dist/index.js"
   ],
+  "types": "dist/index.d.ts",
   "devDependencies": {
     "@types/bun": "latest"
   },
