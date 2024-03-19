@@ -1,6 +1,6 @@
 {
   "name": "tarsierjs",
-  "version": "0.0.01",
+  "version": "0.0.2",
   "module": "index.ts",
   "type": "module",
   "author": "JC (https://github.com/jliocsar)",
