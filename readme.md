@@ -17,16 +17,16 @@ Tarsier was highly inspired by [Signale](https://github.com/klaudiosinani/signal
 ## Installing
 
 ```sh
-npm i -D tarsierjs
-yarn add -D tarsierjs
-pnpm add -D tarsierjs
-bun add -D tarsierjs
+npm i -D @jliocsar/tarsier
+yarn add -D @jliocsar/tarsier
+pnpm add -D @jliocsar/tarsier
+bun add -D @jliocsar/tarsier
 ```
 
 ## Usage
 
 ```ts
-import { tarsier, Color } from ".";
+import { tarsier, Color } from "@jliocsar/tarsier";
 
 const logger = tarsier({
   types: {
