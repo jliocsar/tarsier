@@ -6,7 +6,6 @@ import type {
   LogTypeOptions,
   LogTypes,
 } from "./types";
-import { spawnSync } from "bun";
 
 export const Style = {
   Bold: "bold",
@@ -62,9 +61,6 @@ export const Color = {
 } as const;
 
 class Tarsier<LT extends LogTypes> {
-  private readonly columns = Number(
-    spawnSync(["tput", "cols"]).stdout.toString()
-  );
   private readonly defaultLogTypes = {
     error: {
       label: true,
@@ -296,7 +292,7 @@ class Tarsier<LT extends LogTypes> {
   }
 
   private label(text: string | number) {
-    return colorette.dim(`[${text}]`);
+    return colorette.reset(`[${text}]`);
   }
 
   private log(text: string | number) {

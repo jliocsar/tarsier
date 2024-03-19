@@ -1,7 +1,27 @@
 {
   "name": "tarsier",
+  "version": "0.0.01",
   "module": "index.ts",
   "type": "module",
+  "author": "JC (https://github.com/jliocsar)",
+  "license": "MIT",
+  "description": "Yet another logging library for Node.js/Bun",
+  "keywords": [
+    "logging",
+    "logger",
+    "bun",
+    "node"
+  ],
+  "engineStrict": true,
+  "browsers": false,
+  "homepage": "https://github.com/jliocsar/tarsier",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jliocsar/tarsier.git"
+  },
+  "contributors": [
+    "JC (https://github.com/jliocsar)"
+  ],
   "scripts": {
     "dev": "bun run --bun --watch index.test.ts",
     "build": "bun build index.ts --target=node --outdir=dist && tsc",
