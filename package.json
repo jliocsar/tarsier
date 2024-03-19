@@ -1,5 +1,5 @@
 {
-  "name": "tarsierjs",
+  "name": "@jliocsar/tarsier",
   "version": "0.0.1",
   "module": "index.ts",
   "type": "module",
