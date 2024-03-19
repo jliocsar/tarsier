@@ -25,10 +25,11 @@
   "scripts": {
     "dev": "bun run --bun --watch index.test.ts",
     "build": "bun build index.ts --target=node --outdir=dist && tsc",
-    "test": "bun test"
+    "test": "bun test",
+    "prepublish": "bun run build"
   },
   "files": [
-    "index.js"
+    "dist/"
   ],
   "devDependencies": {
     "@types/bun": "latest"
