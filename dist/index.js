@@ -568,7 +568,7 @@ class Tarsier {
         onLog(output);
       }
       if (labelText) {
-        output = `\n${output}\n`;
+        output = `${output}\n`;
       }
       this.log(output);
     };

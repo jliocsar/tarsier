@@ -287,7 +287,7 @@ class Tarsier<LT extends LogTypes> {
       }
 
       if (labelText) {
-        output = `\n${output}\n`;
+        output = `${output}\n`;
       }
 
       this.log(output);

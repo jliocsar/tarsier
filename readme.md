@@ -1,9 +1,15 @@
 <div align="center">
+
   <h1>🌒 Tarsier</h1>
+
   <strong>Yet another logging library for Node.js/Bun</strong>
+
   <img src="https://raw.githubusercontent.com/jliocsar/tarsier/master/.github/preview.png" width="528">
+
   <br>
+
   <b>W.I.P.</b>
+
 </div>
 
 ---

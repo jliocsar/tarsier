@@ -21,11 +21,9 @@ const logger = tarsier({
   },
 });
 
+console.log("\n\n\n");
 logger.error(new Error("Something went wrong here!"));
 logger.info("Santa is coming to town!");
 logger.santa("Ho ho ho!");
 logger.grinch("I hate Christmas!");
-
-console.log("\n");
-console.log("\n");
-console.log("\n");
+console.log("\n\n\n");
