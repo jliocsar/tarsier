@@ -392,43 +392,43 @@ var Color = {
   Background: BackgroundColor,
   Foreground: ForegroundColor
 };
+var defaultLogTypes = {
+  error: {
+    label: true,
+    color: {
+      foreground: ForegroundColor.RedBright,
+      style: Style.Bold,
+      samePrefixColor: true
+    }
+  },
+  info: {
+    label: true,
+    color: {
+      foreground: ForegroundColor.BlueBright
+    }
+  },
+  success: {
+    label: true,
+    color: {
+      foreground: ForegroundColor.GreenBright
+    }
+  },
+  warn: {
+    label: true,
+    color: {
+      foreground: ForegroundColor.YellowBright,
+      style: Style.Bold
+    }
+  }
+};
 
 class Tarsier {
-  defaultLogTypes = {
-    error: {
-      label: true,
-      color: {
-        foreground: ForegroundColor.RedBright,
-        style: Style.Bold,
-        samePrefixColor: true
-      }
-    },
-    info: {
-      label: true,
-      color: {
-        foreground: ForegroundColor.BlueBright
-      }
-    },
-    success: {
-      label: true,
-      color: {
-        foreground: ForegroundColor.GreenBright
-      }
-    },
-    warn: {
-      label: true,
-      color: {
-        foreground: ForegroundColor.YellowBright,
-        style: Style.Bold
-      }
-    }
-  };
   options;
   constructor(options) {
     this.options = {
       ...options,
       types: {
-        ...this.defaultLogTypes,
+        ...defaultLogTypes,
         ...options?.types
       }
     };
@@ -589,6 +589,7 @@ class Tarsier {
 }
 export {
   tarsier,
+  defaultLogTypes,
   Style,
   ForegroundColor,
   Color,

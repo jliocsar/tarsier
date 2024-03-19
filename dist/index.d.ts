@@ -95,5 +95,34 @@ export declare const Color: {
         readonly Gray: "gray";
     };
 };
+export declare const defaultLogTypes: {
+    readonly error: {
+        readonly label: true;
+        readonly color: {
+            readonly foreground: "redBright";
+            readonly style: "bold";
+            readonly samePrefixColor: true;
+        };
+    };
+    readonly info: {
+        readonly label: true;
+        readonly color: {
+            readonly foreground: "blueBright";
+        };
+    };
+    readonly success: {
+        readonly label: true;
+        readonly color: {
+            readonly foreground: "greenBright";
+        };
+    };
+    readonly warn: {
+        readonly label: true;
+        readonly color: {
+            readonly foreground: "yellowBright";
+            readonly style: "bold";
+        };
+    };
+};
 export declare function tarsier<LT extends LogTypes>(options?: ConstructorOptions<LT>): TarsierInstance<LT>;
 export type { ConstructorOptions as TarsierConstructorOptions, LogTypeOptions as TarsierLogTypeOptions, TarsierInstance, };

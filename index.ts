@@ -17,6 +17,7 @@ export const Style = {
   Italic: "italic",
   Reset: "reset",
 } as const;
+
 export const BackgroundColor = {
   Black: "bgBlack",
   BlackBright: "bgBlackBright",
@@ -35,6 +36,7 @@ export const BackgroundColor = {
   White: "bgWhite",
   WhiteBright: "bgWhiteBright",
 } as const;
+
 export const ForegroundColor = {
   Black: "black",
   BlackBright: "blackBright",
@@ -54,51 +56,51 @@ export const ForegroundColor = {
   WhiteBright: "whiteBright",
   Gray: "gray",
 } as const;
+
 export const Color = {
   Style,
   Background: BackgroundColor,
   Foreground: ForegroundColor,
 } as const;
 
-class Tarsier<LT extends LogTypes> {
-  private readonly defaultLogTypes = {
-    error: {
-      label: true,
-      color: {
-        foreground: ForegroundColor.RedBright,
-        style: Style.Bold,
-        samePrefixColor: true,
-      },
+export const defaultLogTypes = {
+  error: {
+    label: true,
+    color: {
+      foreground: ForegroundColor.RedBright,
+      style: Style.Bold,
+      samePrefixColor: true,
     },
-    info: {
-      label: true,
-      color: {
-        foreground: ForegroundColor.BlueBright,
-      },
+  },
+  info: {
+    label: true,
+    color: {
+      foreground: ForegroundColor.BlueBright,
     },
-    success: {
-      label: true,
-      color: {
-        foreground: ForegroundColor.GreenBright,
-      },
+  },
+  success: {
+    label: true,
+    color: {
+      foreground: ForegroundColor.GreenBright,
     },
-    warn: {
-      label: true,
-      color: {
-        foreground: ForegroundColor.YellowBright,
-        style: Style.Bold,
-      },
+  },
+  warn: {
+    label: true,
+    color: {
+      foreground: ForegroundColor.YellowBright,
+      style: Style.Bold,
     },
-  } as const satisfies LogTypes;
+  },
+} as const satisfies LogTypes;
 
+class Tarsier<LT extends LogTypes> {
   public options: ConstructorOptions<LT>;
 
   constructor(options?: ConstructorOptions<LT>) {
-    // @ts-expect-error ffs
     this.options = {
       ...options,
       types: {
-        ...this.defaultLogTypes,
+        ...defaultLogTypes,
         ...options?.types,
       },
     } as ConstructorOptions<LT>;
